@@ -6,5 +6,5 @@ all: build
 
 .PHONY: build
 build:
-	go build $(GOFLAGS) -o $(DEV_BIN)/grg2p main.go
+	go build $(GOFLAGS) -o $(DEV_BIN)/prg2p main.go
 
