@@ -11,10 +11,12 @@ Usage
 	)
 
 	func main() {
+		// Load g2p rules from flat file
 		f, err := os.Open("static/rules.txt")
 		defer f.Close()
 		g2p, err := prg2p.Load(f)
 
+		// Iterate over words to get their phonemic transcripts
 		var trans []string
 		for _, w := range []string{"ala", "ma", "kota"} {
 			t, err := g2p.Transcribe(w, false)
