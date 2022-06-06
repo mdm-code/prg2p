@@ -3,7 +3,7 @@ package prg2p
 import (
 	"bufio"
 	"fmt"
-	"os"
+	"io"
 	"strings"
 )
 
@@ -52,8 +52,8 @@ func NewInterpreter() *Interpreter {
 }
 
 // Scan populates Interpreter with G2P rules.
-func (i *Interpreter) Scan(f *os.File) error {
-	s := bufio.NewScanner(f)
+func (i *Interpreter) Scan(r io.Reader) error {
+	s := bufio.NewScanner(r)
 	for s.Scan() {
 		l := s.Text()
 		l = strings.TrimSpace(l)
