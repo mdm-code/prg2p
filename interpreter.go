@@ -44,24 +44,24 @@ type Interpreter struct {
 // NewInterpreter returns a new Interpreter instance responsible for parsing
 // G2P rules. It takes variable assignments and rules as input and creates a
 // structure that can be used for building other structures.
-func NewInterpreter() Interpreter {
-	i := Interpreter{
+func NewInterpreter() *Interpreter {
+	i := &Interpreter{
 		vars: make(map[string][]string),
 	}
 	return i
 }
 
-// Scan populates the Interpreter with G2P rules.
-func (i *Interpreter) Scan(f *os.File) (*Interpreter, error) {
+// Scan populates Interpreter with G2P rules.
+func (i *Interpreter) Scan(f *os.File) error {
 	s := bufio.NewScanner(f)
 	for s.Scan() {
 		l := s.Text()
 		l = strings.TrimSpace(l)
 		if err := i.eval(l); err != nil {
-			return i, fmt.Errorf("could not evaluate %s", l)
+			return fmt.Errorf("could not evaluate %s", l)
 		}
 	}
-	return i, nil
+	return nil
 }
 
 // eval evaluates a line as a variable or a rule.

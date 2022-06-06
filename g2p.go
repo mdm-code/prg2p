@@ -5,18 +5,6 @@ import (
 	"strings"
 )
 
-// decl declares the amount of returned grapheme-to-phoneme transcriptions.
-type decl uint8
-
-const (
-	// All directs (*G2P).Transcribe() to return all possible transcripts.
-	All decl = iota
-	// First directs (*G2P).Transcribe() to return the first transcript.
-	First
-	// Last directs (*G2P).Transcribe() to return the last transcript.
-	Last
-)
-
 // G2P transcriber class that takes a populated double trie tree
 // with parsed grapheme-to-phoneme rules. It exposes transcription
 // interface that takes individual words and outputs their most
@@ -33,10 +21,9 @@ func NewG2P(t *TrieNode) *G2P {
 	return &g
 }
 
-// Transcribe word from graphemic to phonemic transcription.
-// Use d to specify whether to return all possible transcriptions or
-// just the first/last hit.
-func (g *G2P) Transcribe(w string, d decl) ([]string, error) {
+// Transcribe word from graphemic to phonemic transcription. Use n to specify
+// whether to return all possible transcriptions or just the first hit.
+func (g *G2P) Transcribe(w string, all bool) ([]string, error) {
 	var trans [][]string
 	w = strings.ToLower(w)
 	nchars := len([]rune(w))
@@ -44,7 +31,7 @@ func (g *G2P) Transcribe(w string, d decl) ([]string, error) {
 	for i < nchars {
 		t := g.rightVars(w, i, i-1, g.tree)
 		if t == nil {
-			return []string{"ERROR"}, fmt.Errorf("failed to transcribe %s", w)
+			return []string{}, fmt.Errorf("failed to transcribe %s", w)
 		}
 		trans = append(trans, t.output)
 		i += t.nchars
@@ -53,16 +40,10 @@ func (g *G2P) Transcribe(w string, d decl) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	switch d {
-	case All:
-		return out, nil
-	case First:
-		return out[:1], nil
-	case Last:
-		return out[len(out)-1:], nil
-	default:
+	if all == true {
 		return out, nil
 	}
+	return out[:1], nil
 }
 
 // All grabs all possible transcription variants.
