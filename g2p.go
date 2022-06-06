@@ -2,6 +2,7 @@ package prg2p
 
 import (
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -19,6 +20,18 @@ func NewG2P(t *TrieNode) *G2P {
 		tree: t,
 	}
 	return &g
+}
+
+// Load returns a fully initialized G2P object with rules read from r.
+func Load(r io.Reader) (*G2P, error) {
+	interp := NewInterpreter()
+	err := interp.Scan(r)
+	if err != nil {
+		return nil, err
+	}
+	tree := NewTree(interp)
+	g2p := NewG2P(tree)
+	return g2p, nil
 }
 
 // Transcribe word from graphemic to phonemic transcription. Use n to specify
