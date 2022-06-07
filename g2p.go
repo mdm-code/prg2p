@@ -14,7 +14,7 @@ type G2P struct {
 	tree *TrieNode
 }
 
-// NewG2P returns G2P object responsibile for handling transcription.
+// NewG2P returns G2P object responsible for handling transcription.
 func NewG2P(t *TrieNode) *G2P {
 	g := G2P{
 		tree: t,
@@ -38,7 +38,7 @@ func Load(r io.Reader) (*G2P, error) {
 // whether to return all possible transcriptions or just the first hit.
 func (g *G2P) Transcribe(w string, all bool) ([]string, error) {
 	if g.tree == nil {
-		return []string{}, fmt.Errorf("tire node is nil")
+		return []string{}, fmt.Errorf("trie node is nil")
 	}
 	var trans [][]string
 	w = strings.ToLower(w)
