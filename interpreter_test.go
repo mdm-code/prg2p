@@ -272,6 +272,16 @@ func TestScanning(t *testing.T) {
 	}
 }
 
+// Test Interpreter fails on unexpected line in the reader.
+func TestInterpreterFails(t *testing.T) {
+	i := NewInterpreter()
+	r := strings.NewReader(`she sells sea shells at the sea shore`)
+	err := i.Scan(r)
+	if err == nil {
+		t.Errorf("interpreter Scan() call should fail")
+	}
+}
+
 // Verify each of the possible outputs for line evaluation.
 func TestEval(t *testing.T) {
 	i := &Interpreter{
@@ -422,13 +432,22 @@ func TestAsConstraint(t *testing.T) {
 
 // asConstraint throws an error when context is not enclosed in ( ).
 func TestAsConstraintError(t *testing.T) {
-	I := Interpreter{
+	cases := []struct {
+		name, ctx string
+	}{
+		{"format-wrong", "(k,g,ng"},
+		{"missing-char", "+k+g+ng)"},
+	}
+	i := Interpreter{
 		vars: make(map[string][]string),
 	}
-	ctx := "(k,g,ng"
-	_, err := I.asConstraint(ctx)
-	if err == nil {
-		t.Errorf("wrong constraint format hasn't raised an error, %s", ctx)
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := i.asConstraint(c.ctx)
+			if err == nil {
+				t.Errorf("expected method to fail on input %s", c.ctx)
+			}
+		})
 	}
 }
 
@@ -466,13 +485,22 @@ func TestAsDifference(t *testing.T) {
 
 // asDifference throws an error when context is not enclosed in ( ).
 func TestAsDifferenceError(t *testing.T) {
-	I := Interpreter{
+	cases := []struct {
+		name, ctx string
+	}{
+		{"format-wrong", "-(p, t, k"},
+		{"missing-char", "-p-t"},
+	}
+	i := Interpreter{
 		vars: make(map[string][]string),
 	}
-	ctx := "-(p, t, k"
-	_, err := I.asDifference(ctx)
-	if err == nil {
-		t.Errorf("wrong constraint format hasn't raised an error, %s", ctx)
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			_, err := i.asDifference(c.ctx)
+			if err == nil {
+				t.Errorf("expected method to fail on input %s", c.ctx)
+			}
+		})
 	}
 }
 
