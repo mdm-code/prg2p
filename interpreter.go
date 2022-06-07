@@ -2,10 +2,15 @@ package prg2p
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
 )
+
+// errScan is raised when Interpreter encounters nil io.Reader interface passed
+// to Scan() method.
+var errScan = errors.New("scanning error on nil interface")
 
 // Variable from an assignment statement with the name (left) and value (right)
 // side of the operator.
@@ -53,6 +58,9 @@ func NewInterpreter() *Interpreter {
 
 // Scan populates Interpreter with G2P rules.
 func (i *Interpreter) Scan(r io.Reader) error {
+	if r == nil {
+		return errScan
+	}
 	s := bufio.NewScanner(r)
 	for s.Scan() {
 		l := s.Text()
