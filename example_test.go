@@ -18,14 +18,14 @@ func ExampleNewInterpreter() {
 	fmt.Println(i)
 }
 
-func ExampleInterpreter_Scan() {
+func ExampleInterpreter() {
 	i := prg2p.NewInterpreter()
 	r := strings.NewReader(`SA = a, b, c`)
 	// Scan rules and declarations from the reader r
 	i.Scan(r)
 }
 
-func ExampleG2P_Transcribe() {
+func ExampleG2P() {
 	g2p := prg2p.NewG2P(nil)
 	trans, err := g2p.Transcribe("ala", false)
 	if err != nil {
