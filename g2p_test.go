@@ -34,6 +34,15 @@ func TestLoadFails(t *testing.T) {
 	}
 }
 
+// Test empty Transcribe errors out when trie is nil
+func TestErrorTrieNil(t *testing.T) {
+	g2p := NewG2P(nil)
+	_, err := g2p.Transcribe("test", false)
+	if err == nil {
+		t.Error("nil tree should cause Transcribe to fail")
+	}
+}
+
 // Test G2P.Transcribe() package interface method.
 func TestTranscribe(t *testing.T) {
 	cases := []struct {
