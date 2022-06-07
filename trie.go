@@ -80,7 +80,7 @@ func NewTree(i *Interpreter) *TrieNode {
 		right: make(map[string]*TrieNode),
 	}
 	if i == nil {
-		return t
+		return nil
 	}
 	for _, r := range i.rules {
 		l, r, src, tgt := r.left, r.right, r.source, r.target
