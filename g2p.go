@@ -37,6 +37,9 @@ func Load(r io.Reader) (*G2P, error) {
 // Transcribe word from graphemic to phonemic transcription. Use n to specify
 // whether to return all possible transcriptions or just the first hit.
 func (g *G2P) Transcribe(w string, all bool) ([]string, error) {
+	if g.tree == nil {
+		return []string{}, fmt.Errorf("tire node is nil")
+	}
 	var trans [][]string
 	w = strings.ToLower(w)
 	nchars := len([]rune(w))
