@@ -27,14 +27,24 @@ const usage = `prg2p - grapheme-to-phoneme converter
 The prg2p utility reads space-delimited words sequentially from standard input,
 writing converted phonemic transcripts to standard output.
 
-Usage:   prg2p [-h] [-r FILE] [-a BOOL] [FILE ...]
-
-Example: echo ala ma kota | prg2p -r=rules.txt -a=false
+Usage:  prg2p [-h] [-r FILE] [-a BOOL] [FILE ...]
 
 Options:
 	-h, --help  show this help message and exit
 	-r, --rule  file with g2p rules (default: prg2p.Rules())
-	-a, --all   print all allowed conversions (default: False)
+	-a, --all   print all allowed conversions (default: false)
+
+Example:
+	echo ala ma kota | prg2p -r=rules.txt -a=false
+
+Output:
+	ala   1   a l a
+	ma    1   m a
+	kota  1   k o t a
+
+The program returns one word per line where each line contains tab-separated
+word, the number of variants and transcripts, which are separted with "|" in
+case of more than one variant.
 `
 
 func main() {
