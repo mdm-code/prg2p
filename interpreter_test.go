@@ -252,8 +252,8 @@ PUSTY	ë	PUSTY	e`)
 // Check if the interpreter handles the file with rules without raising an
 // error.
 func TestParser(t *testing.T) {
-	i := NewInterpreter()
-	err := i.Scan(rulesIO())
+	i := newInterpreter()
+	err := i.scan(rulesIO())
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -261,9 +261,9 @@ func TestParser(t *testing.T) {
 
 // Test errScan raised with nil io.Reader interface.
 func TestScanning(t *testing.T) {
-	i := NewInterpreter()
+	i := newInterpreter()
 	var r io.Reader
-	err := i.Scan(r)
+	err := i.scan(r)
 	if err != nil {
 		if errors.Is(err, errScan) {
 			return
@@ -274,9 +274,9 @@ func TestScanning(t *testing.T) {
 
 // Test Interpreter fails on unexpected line in the reader.
 func TestInterpreterFails(t *testing.T) {
-	i := NewInterpreter()
+	i := newInterpreter()
 	r := strings.NewReader(`she sells sea shells at the sea shore`)
-	err := i.Scan(r)
+	err := i.scan(r)
 	if err == nil {
 		t.Errorf("interpreter Scan() call should fail")
 	}
@@ -284,7 +284,7 @@ func TestInterpreterFails(t *testing.T) {
 
 // Verify each of the possible outputs for line evaluation.
 func TestEval(t *testing.T) {
-	i := &Interpreter{
+	i := &interpreter{
 		vars: make(map[string][]string),
 	}
 	i.vars["PUSTY"] = []string{"*"}
@@ -319,7 +319,7 @@ func TestEval(t *testing.T) {
 // Test if rules are parsed into their respective structures based on their
 // input.
 func TestAsRule(t *testing.T) {
-	i := &Interpreter{
+	i := &interpreter{
 		vars: make(map[string][]string),
 	}
 	i.vars["ALL"] = []string{"a", "e", "i", "o", "u", "y"}
@@ -358,7 +358,7 @@ func TestAsRule(t *testing.T) {
 
 // Check if variables are set given the correct input.
 func TestAsVariable(t *testing.T) {
-	i := &Interpreter{
+	i := &interpreter{
 		vars: make(map[string][]string),
 	}
 	valid := []string{
@@ -414,7 +414,7 @@ func TestAsConstraint(t *testing.T) {
 		{"a", "e", "i"},
 		{"$"},
 	}
-	I := Interpreter{
+	I := interpreter{
 		vars: make(map[string][]string),
 	}
 	I.vars["ALL"] = []string{"a", "e", "i", "o", "u", "y", "cz", "dz"}
@@ -438,7 +438,7 @@ func TestAsConstraintError(t *testing.T) {
 		{"format-wrong", "(k,g,ng"},
 		{"missing-char", "+k+g+ng)"},
 	}
-	i := Interpreter{
+	i := interpreter{
 		vars: make(map[string][]string),
 	}
 	for _, c := range cases {
@@ -453,7 +453,7 @@ func TestAsConstraintError(t *testing.T) {
 
 // Check if difference context is established as specified.
 func TestAsDifference(t *testing.T) {
-	I := Interpreter{
+	I := interpreter{
 		vars: make(map[string][]string),
 	}
 	I.vars["ALL"] = []string{"ng", "cz", "dz", "p", "$"}
@@ -491,7 +491,7 @@ func TestAsDifferenceError(t *testing.T) {
 		{"format-wrong", "-(p, t, k"},
 		{"missing-char", "-p-t"},
 	}
-	i := Interpreter{
+	i := interpreter{
 		vars: make(map[string][]string),
 	}
 	for _, c := range cases {
@@ -520,7 +520,7 @@ func TestContext(t *testing.T) {
 		{"cz", "dz"},
 		{"cz", "dz"},
 	}
-	I := Interpreter{
+	I := interpreter{
 		vars: make(map[string][]string),
 	}
 	I.vars["ALL"] = []string{"a", "e", "i", "o", "u", "y", "cz", "dz"}
@@ -540,7 +540,7 @@ func TestContext(t *testing.T) {
 
 // Error is returned when Interpreter.vars has no "ALL" key.
 func TestContextError(t *testing.T) {
-	I := Interpreter{
+	I := interpreter{
 		vars: make(map[string][]string),
 	}
 	_, err := I.context("(a, b, c)")
