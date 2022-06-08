@@ -4,24 +4,24 @@ import (
 	"strings"
 )
 
-// TrieNode represents double-root trie tree structure holding left/right
+// trieNode represents double-root trie tree structure holding left/right
 // context.
-type TrieNode struct {
-	left, right map[string]*TrieNode
+type trieNode struct {
+	left, right map[string]*trieNode
 	output      []string
 	nchars      int
 }
 
 // traverseLeft traverses the left context of the trieNode. This method can
 // both create the context of the trie or traverse down the existing context.
-func (t *TrieNode) traverseLeft(s string) *TrieNode {
+func (t *trieNode) traverseLeft(s string) *trieNode {
 	curr := t
 	s = reverse(s)
 	for _, c := range strings.Split(s, "") {
 		if _, ok := curr.left[c]; !ok {
-			t := &TrieNode{
-				left:  make(map[string]*TrieNode),
-				right: make(map[string]*TrieNode),
+			t := &trieNode{
+				left:  make(map[string]*trieNode),
+				right: make(map[string]*trieNode),
 			}
 			curr.left[c] = t
 		}
@@ -32,13 +32,13 @@ func (t *TrieNode) traverseLeft(s string) *TrieNode {
 
 // traverseRight traverses the right context of the trieNode. This method can
 // both create the context of the trie or traverse down the existing context.
-func (t *TrieNode) traverseRight(s string) *TrieNode {
+func (t *trieNode) traverseRight(s string) *trieNode {
 	curr := t
 	for _, c := range strings.Split(s, "") {
 		if _, ok := curr.right[c]; !ok {
-			t := &TrieNode{
-				left:  make(map[string]*TrieNode),
-				right: make(map[string]*TrieNode),
+			t := &trieNode{
+				left:  make(map[string]*trieNode),
+				right: make(map[string]*trieNode),
 			}
 			curr.right[c] = t
 		}
@@ -48,7 +48,7 @@ func (t *TrieNode) traverseRight(s string) *TrieNode {
 }
 
 // setOutput sets the character count of source and the output word.
-func (t *TrieNode) setOutput(nchars int, out []string) {
+func (t *trieNode) setOutput(nchars int, out []string) {
 	if t.nchars > nchars {
 		return
 	}
@@ -68,16 +68,16 @@ func reverse(s string) string {
 	return out
 }
 
-// NewTree creates a new tree structure with parsed out G2P rules. A tree is
+// newTree creates a new tree structure with parsed out G2P rules. A tree is
 // organized in such a way that top level has characters from the source word,
 // tier two holds its right- hand-side context and, tier three its left
 // context. The transcription can be figured out based on the top-down
 // structure starting at the character and going to the right and then left
 // context.
-func NewTree(i *Interpreter) *TrieNode {
-	t := &TrieNode{
-		left:  make(map[string]*TrieNode),
-		right: make(map[string]*TrieNode),
+func newTree(i *interpreter) *trieNode {
+	t := &trieNode{
+		left:  make(map[string]*trieNode),
+		right: make(map[string]*trieNode),
 	}
 	if i == nil {
 		return nil

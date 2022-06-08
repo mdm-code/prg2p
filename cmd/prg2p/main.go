@@ -4,12 +4,12 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
 
 	"github.com/mdm-code/prg2p"
-	"github.com/mdm-code/xdg"
 )
 
 var (
@@ -29,11 +29,11 @@ writing converted phonemic transcripts to standard output.
 
 Usage:   prg2p [-h] [-r FILE] [-a BOOL] [FILE ...]
 
-Example: prg2p -r=rules.txt -a=false <<<$(echo ala ma kota)
+Example: echo ala ma kota | prg2p -r=rules.txt -a=false
 
 Options:
 	-h, --help  show this help message and exit
-	-r, --rule  file with g2p rules (default: XDG_DATA_HOME/prg2p/rules.txt)
+	-r, --rule  file with g2p rules (default: prg2p.Rules())
 	-a, --all   print all allowed conversions (default: False)
 `
 
@@ -45,29 +45,25 @@ func main() {
 	flag.Usage = func() { fmt.Print(usage) }
 	flag.Parse()
 
+	var (
+		f   io.Reader
+		err error
+	)
 	if rule == "" {
-		var ok bool
-		if rule, ok = xdg.Find(xdg.Data, "prg2p/rules.txt"); !ok {
-			fmt.Fprintf(os.Stderr, EOL("missing G2P rules file"))
+		f = prg2p.Rules()
+	} else {
+		f, err = os.Open(rule)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, EOL(err.Error()))
 			os.Exit(exitFailure)
 		}
 	}
 
-	f, err := os.Open(rule)
+	g2p, err := prg2p.Load(f)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, EOL(err.Error()))
 		os.Exit(exitFailure)
 	}
-
-	intp := prg2p.NewInterpreter()
-	err = intp.Scan(f)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, EOL(err.Error()))
-		os.Exit(exitFailure)
-	}
-
-	tree := prg2p.NewTree(intp)
-	g2p := prg2p.NewG2P(tree)
 
 	in := bufio.NewScanner(os.Stdin)
 	in.Split(bufio.ScanWords)

@@ -39,25 +39,25 @@ type rule struct {
 	target []string
 }
 
-// Interpreter interprets G2P rules. It holds two components used to process
+// interpreter interprets G2P rules. It holds two components used to process
 // text into phonemic transcription: variables and rules.
-type Interpreter struct {
+type interpreter struct {
 	vars  map[string][]string // Ex. key = ALL, value = a, b, c ... z
 	rules []rule
 }
 
-// NewInterpreter returns a new Interpreter instance responsible for parsing
+// newInterpreter returns a new Interpreter instance responsible for parsing
 // G2P rules. It takes variable assignments and rules as input and creates a
 // structure that can be used for building other structures.
-func NewInterpreter() *Interpreter {
-	i := &Interpreter{
+func newInterpreter() *interpreter {
+	i := &interpreter{
 		vars: make(map[string][]string),
 	}
 	return i
 }
 
-// Scan populates Interpreter with G2P rules.
-func (i *Interpreter) Scan(r io.Reader) error {
+// scan populates Interpreter with G2P rules.
+func (i *interpreter) scan(r io.Reader) error {
 	if r == nil {
 		return errScan
 	}
@@ -73,7 +73,7 @@ func (i *Interpreter) Scan(r io.Reader) error {
 }
 
 // eval evaluates a line as a variable or a rule.
-func (i *Interpreter) eval(l string) error {
+func (i *interpreter) eval(l string) error {
 	if l == "" || strings.HasPrefix(l, "#") {
 		return nil
 	}
@@ -92,7 +92,7 @@ func (i *Interpreter) eval(l string) error {
 }
 
 // asVar evaluates a line as a variable assignment.
-func (i *Interpreter) asVar(l string) error {
+func (i *interpreter) asVar(l string) error {
 	sp := strings.Split(l, "=")
 	if len(sp) != 2 {
 		return fmt.Errorf("multiple assignments on one line %s", l)
@@ -113,7 +113,7 @@ func (i *Interpreter) asVar(l string) error {
 }
 
 // asRule evaluates a line as a rule statement.
-func (i *Interpreter) asRule(l string) error {
+func (i *interpreter) asRule(l string) error {
 	splits := strings.Split(l, "\t")
 	if len(splits) != 4 {
 		return fmt.Errorf("expected 4 splits in %s", l)
@@ -148,7 +148,7 @@ func (i *Interpreter) asRule(l string) error {
 }
 
 // context returns the left/right context for the source character.
-func (i *Interpreter) context(v string) ([]string, error) {
+func (i *interpreter) context(v string) ([]string, error) {
 	if s, ok := i.vars[v]; ok && strings.Join(s, "") == "*" {
 		return nil, nil
 	}
@@ -173,7 +173,7 @@ func (i *Interpreter) context(v string) ([]string, error) {
 
 // asDifference returns a limited set of values by removing unwanted values
 // them from ALL.
-func (i *Interpreter) asDifference(v string) ([]string, error) {
+func (i *interpreter) asDifference(v string) ([]string, error) {
 	if strings.HasPrefix(v, "-(") {
 		if !strings.HasSuffix(v, ")") {
 			return nil, fmt.Errorf("expected \")\" in line %s", v)
@@ -198,7 +198,7 @@ func (i *Interpreter) asDifference(v string) ([]string, error) {
 }
 
 // asConstraint returns a limited set of values.
-func (i *Interpreter) asConstraint(v string) ([]string, error) {
+func (i *interpreter) asConstraint(v string) ([]string, error) {
 	if strings.HasPrefix(v, "(") {
 		if !strings.HasSuffix(v, ")") {
 			return nil, fmt.Errorf("expected \")\" in line %s", v)

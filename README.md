@@ -4,7 +4,7 @@
   </div>
 </h1>
 
-<h4 align="center">Polish grapheme-to-phoneme converter in Go</h4>
+<h4 align="center">Grapheme-to-phoneme converter for Polish in Go</h4>
 
 <div align="center">
 <p>
@@ -29,36 +29,38 @@
 The `prg2p` package implements a grapheme-to-phoneme rule based converter for
 Polish.
 
-It offers the package public API components and a standalone CLI program that
-can be used to pipe data through.
+It provides a standalone command-line program to process data efficiently on
+the terminal and exposes the public API components of the package for code
+reuse.
 
-Consult [package documentation](https://pkg.go.dev/github.com/mdm-code/prg2p)
-or check [Usage](#usage) section below to see how to use `prg2p` in code.
+Consult the [package documentation](https://pkg.go.dev/github.com/mdm-code/prg2p)
+or check [Usage](#usage) section below to see how to use `prg2p` in your code.
 
 
 ## Installation
 
-To add package to a Go project dependencies run 
+To add package to a Go project dependencies run the following command:
 
 ```sh
 go get github.com/mdm-code/prg2p
 ```
 
-In order to use the CLI program, you need to use
+In order to use the CLI program, you need to use this command:
 
 ```sh
 go install github.com/mdm-code/prg2p@latest
 ```
 
-with `@latest` or any version you find appropriate for that matter.
+Here, you can use the `@latest` or any version you find appropriate for that
+matter.
 
 
 ## Usage
 
-Type `prg2p -h` after installing executables as described [here](#installation)
-to see how to use `prg2p` command line interface.
+Type `prg2p -h` from the terminal after installing executables as described
+[here](#installation) to see how to use `prg2p` command-line interface.
 
-Here is how you can use the public API of `prg2p` package in your code:
+Here is how you can use the public API of the `prg2p` package in your code:
 
 ```go
 package main
@@ -70,10 +72,8 @@ import (
 )
 
 func main() {
-	// Load g2p rules from flat file
-	f, err := os.Open("static/rules.txt")
-	defer f.Close()
-	g2p, err := prg2p.Load(f)
+	r := prg2p.Rules()
+	g2p, err := prg2p.Load(r)
 
 	// Iterate over words to get their phonemic transcripts
 	var trans []string
@@ -102,6 +102,8 @@ building:
 ```sh
 go install golang.org/x/lint/golint@latest
 ```
+
+Happy coding!
 
 
 ## License

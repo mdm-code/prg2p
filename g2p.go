@@ -11,11 +11,11 @@ import (
 // interface that takes individual words and outputs their most
 // likely transcripts.
 type G2P struct {
-	tree *TrieNode
+	tree *trieNode
 }
 
-// NewG2P returns G2P object responsible for handling transcription.
-func NewG2P(t *TrieNode) *G2P {
+// newG2P returns G2P object responsible for handling transcription.
+func newG2P(t *trieNode) *G2P {
 	g := G2P{
 		tree: t,
 	}
@@ -24,13 +24,13 @@ func NewG2P(t *TrieNode) *G2P {
 
 // Load returns a fully initialized G2P object with rules read from r.
 func Load(r io.Reader) (*G2P, error) {
-	interp := NewInterpreter()
-	err := interp.Scan(r)
+	interp := newInterpreter()
+	err := interp.scan(r)
 	if err != nil {
 		return nil, err
 	}
-	tree := NewTree(interp)
-	g2p := NewG2P(tree)
+	tree := newTree(interp)
+	g2p := newG2P(tree)
 	return g2p, nil
 }
 
@@ -84,7 +84,7 @@ func (g *G2P) all(trans [][]string, i int) ([]string, error) {
 }
 
 // RightVars traverses the right-hand side of the complete double trie.
-func (g *G2P) rightVars(w string, frontIdx, backIdx int, trie *TrieNode) *TrieNode {
+func (g *G2P) rightVars(w string, frontIdx, backIdx int, trie *trieNode) *trieNode {
 	wRune := []rune(w)
 	var curChar string
 	if frontIdx < len(wRune) {
@@ -114,7 +114,7 @@ func (g *G2P) rightVars(w string, frontIdx, backIdx int, trie *TrieNode) *TrieNo
 }
 
 // LeftVars traverses left-hand side part of the complete double trie.
-func (g *G2P) leftVars(w string, backIdx int, trie *TrieNode) *TrieNode {
+func (g *G2P) leftVars(w string, backIdx int, trie *trieNode) *trieNode {
 	wRune := []rune(w)
 	curChar := string(wRune[len(wRune)-2-backIdx])
 
