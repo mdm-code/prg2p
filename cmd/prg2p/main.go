@@ -59,15 +59,11 @@ func main() {
 		}
 	}
 
-	intp := prg2p.NewInterpreter()
-	err = intp.Scan(f)
+	g2p, err := prg2p.Load(f)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, EOL(err.Error()))
 		os.Exit(exitFailure)
 	}
-
-	tree := prg2p.NewTree(intp)
-	g2p := prg2p.NewG2P(tree)
 
 	in := bufio.NewScanner(os.Stdin)
 	in.Split(bufio.ScanWords)
