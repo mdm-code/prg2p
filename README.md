@@ -74,6 +74,10 @@ import (
 func main() {
 	r := prg2p.Rules()
 	g2p, err := prg2p.Load(r)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	// Iterate over words to get their phonemic transcripts
 	var trans []string

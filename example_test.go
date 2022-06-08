@@ -13,13 +13,17 @@ func ExampleLoad() {
 		fmt.Println(err)
 		return
 	}
-	var trans [][]string
+
+	var trans []string
 	for _, w := range []string{"ala", "ma", "kta"} {
 		t, err := g2p.Transcribe(w, false)
 		if err != nil {
+			fmt.Println(err)
 			continue
 		}
-		trans = append(trans, t)
+		trans = append(trans, t...)
 	}
-	fmt.Println(trans)
+	for _, t := range trans {
+		fmt.Println(t)
+	}
 }
