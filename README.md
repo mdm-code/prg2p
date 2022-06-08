@@ -72,10 +72,8 @@ import (
 )
 
 func main() {
-	// Load g2p rules from flat file
-	f, err := os.Open("static/rules.txt")
-	defer f.Close()
-	g2p, err := prg2p.Load(f)
+	r := prg2p.Rules()
+	g2p, err := prg2p.Load(r)
 
 	// Iterate over words to get their phonemic transcripts
 	var trans []string
