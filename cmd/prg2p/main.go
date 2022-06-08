@@ -29,7 +29,7 @@ writing converted phonemic transcripts to standard output.
 
 Usage:   prg2p [-h] [-r FILE] [-a BOOL] [FILE ...]
 
-Example: prg2p -r=rules.txt -a=false <<<$(echo ala ma kota)
+Example: echo ala ma kota | prg2p -r=rules.txt -a=false
 
 Options:
 	-h, --help  show this help message and exit
