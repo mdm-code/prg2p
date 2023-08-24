@@ -15,7 +15,7 @@ func ExampleLoad() {
 	}
 
 	var trans []string
-	for _, w := range []string{"ala", "ma", "kta"} {
+	for _, w := range []string{"ala", "ma", "kota"} {
 		t, err := g2p.Transcribe(w, false)
 		if err != nil {
 			fmt.Println(err)
