@@ -112,7 +112,7 @@ Happy coding!
 
 ## License
 
-Copyright (c) 2022 Michał Adamczyk.
+Copyright (c) 2023 Michał Adamczyk.
 
 This project is licensed under the [MIT license](https://opensource.org/licenses/MIT).
 See [LICENSE](LICENSE) for more details.
